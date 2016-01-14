@@ -49,7 +49,7 @@ function sanitizeColumnNames(row)
 /**
  * Store data on a spreadsheet appending new rows
  *
- * @param spreadsheetKey
+ * @param {string} spreadsheetKey - the long id in the sheets URL
  * @param {(Object|string)} creds
  * @param {string} creds.client_email
  * @param {string} creds.private_key
@@ -66,24 +66,39 @@ function WorksheetLog(spreadsheetKey, creds, options)
   options = options || {}
   options.objectMode = true
 
-  WorksheetLog.super_.call(options)
-
+  WorksheetLog.super_.call(this, options)
 
   var worksheet_id = options.worksheet_id || 1
 
-
-  // spreadsheet key is the long id in the sheets URL
   var sheet = new GoogleSpreadsheet(spreadsheetKey)
 
-  sheet.useServiceAccountAuth(creds, function(err)
+  var buffer = []
+  var _token
+
+  function addRow(row, callback)
+  {
+    sheet.addRow(worksheet_id, sanitizeColumnNames(row), callback)
+  }
+
+  sheet.useServiceAccountAuth(creds, function(err, token)
   {
     if(err) return self.emit('error', err)
 
-    self._write = function(chunk, encoding, callback)
+    _token = token
+
+    buffer.forEach(function(item)
     {
-      sheet.addRow(worksheet_id, sanitizeColumnNames(chunk), callback)
-    }
+      addRow(item.row, item.callback)
+    })
+    buffer = []
   })
+
+  this._write = function(row, _, callback)
+  {
+    if(!_token) return buffer.push({row: row, callback: callback})
+
+    addRow(row, callback)
+  }
 }
 inherits(WorksheetLog, Writable)
 
