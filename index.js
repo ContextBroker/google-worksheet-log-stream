@@ -68,36 +68,26 @@ function WorksheetLog(spreadsheetKey, creds, options)
 
   WorksheetLog.super_.call(this, options)
 
+
   var worksheet_id = options.worksheet_id || 1
 
   var sheet = new GoogleSpreadsheet(spreadsheetKey)
 
-  var buffer = []
-  var _token
-
-  function addRow(row, callback)
-  {
-    sheet.addRow(worksheet_id, sanitizeColumnNames(row), callback)
-  }
+  // Buffer data until we are ready
+  this.cork()
 
   sheet.useServiceAccountAuth(creds, function(err, token)
   {
     if(err) return self.emit('error', err)
 
-    _token = token
-
-    buffer.forEach(function(item)
-    {
-      addRow(item.row, item.callback)
-    })
-    buffer = []
+    // Start writting all the (buffered) data
+    self.uncork()
   })
+
 
   this._write = function(row, _, callback)
   {
-    if(!_token) return buffer.push({row: row, callback: callback})
-
-    addRow(row, callback)
+    sheet.addRow(worksheet_id, sanitizeColumnNames(row), callback)
   }
 }
 inherits(WorksheetLog, Writable)
