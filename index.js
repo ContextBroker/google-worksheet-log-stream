@@ -78,7 +78,11 @@ function WorksheetLog(spreadsheetKey, creds, options)
 
   sheet.useServiceAccountAuth(creds, function(err, token)
   {
-    if(err) return self.emit('error', err)
+    if(err)
+    {
+      self.emit('error', err)
+      return self.end()
+    }
 
     // Start writting all the (buffered) data
     self.uncork()
