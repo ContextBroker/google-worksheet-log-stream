@@ -54,7 +54,7 @@ function sanitizeColumnNames(row)
  * @param {string} creds.client_email
  * @param {string} creds.private_key
  * @param {Object} [options]
- * @param {Integer} [options.worksheet_id=1]
+ * @param {Integer} [options.worksheet=1]
  */
 function WorksheetLog(spreadsheetKey, creds, options)
 {
@@ -68,30 +68,109 @@ function WorksheetLog(spreadsheetKey, creds, options)
 
   WorksheetLog.super_.call(this, options)
 
-
-  var worksheet_id = options.worksheet_id || 1
-
-  var sheet = new GoogleSpreadsheet(spreadsheetKey)
-
   // Buffer data until we are ready
   this.cork()
 
+
+  var colnames
+  var worksheet = options.worksheet || 0
+
+  var sheet = new GoogleSpreadsheet(spreadsheetKey)
+
+
+  function onError(err)
+  {
+    self.emit('error', err)
+    self.end()
+  }
+
+  function headerNotExist(item)
+  {
+    return colnames.indexOf(item) < 0
+  }
+
+  function filterWorksheet(element)
+  {
+    return element.title === worksheet
+  }
+
+  /**
+   * Get the worksheet by its title or position
+   */
+  function getWorksheet()
+  {
+    sheet.getInfo(function(error, info)
+    {
+      if(error) return onError(error)
+
+      // Get the worksheet
+      var worksheets = info.worksheets
+      worksheet = worksheets.filter(filterWorksheet)[0] || worksheets[worksheet]
+
+      // Get the colnames
+      worksheet.getCells({'max-row': 1}, function(error, cells)
+      {
+        if(error) return onError(error)
+
+        colnames = cells.map(function(item){return item.value})
+
+        // Start writting all the (buffered) data
+        self.uncork()
+      })
+    })
+  }
+
+
   sheet.useServiceAccountAuth(creds, function(err, token)
   {
-    if(err)
+    if(err) return onError(err)
+
+    // Worksheet already selected by its ID
+    if(typeof worksheet === 'number') return getWorksheet()
+
+    // Create a new worksheet by its title if don't exists yet and get its ID
+
+    var opts =
     {
-      self.emit('error', err)
-      return self.end()
+      title: worksheet,
+      rowCount: 1,
+      colCount: 1
     }
 
-    // Start writting all the (buffered) data
-    self.uncork()
+    sheet.addWorksheet(opts, function(error, info){
+      // [ToDo] Ignore only error related to existing worksheet
+
+      getWorksheet()
+    })
   })
 
 
+  /**
+   * Write a streamed row on the worksheet
+   *
+   * @param {Object} row
+   * @param {*} _ - ignored
+   * @param {Function} callback
+   *
+   * @private
+   */
   this._write = function(row, _, callback)
   {
-    sheet.addRow(worksheet_id, sanitizeColumnNames(row), callback)
+    var newColumns = Object.keys(row).filter(headerNotExist)
+
+    // No new columns, add row directly
+    if(!newColumns.length)
+      return worksheet.addRow(sanitizeColumnNames(row), callback)
+
+    // New columns, add the new colnames to the header before adding the data
+    colnames = colnames.concat(newColumns)
+
+    worksheet.setHeaders(colnames, function(error)
+    {
+      if(error) return onError(error)
+
+      worksheet.addRow(sanitizeColumnNames(row), callback)
+    })
   }
 }
 inherits(WorksheetLog, Writable)

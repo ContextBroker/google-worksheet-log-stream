@@ -14,5 +14,10 @@ const SPREADSHEET_KEY = '19pi-EIKBDP-WMKVxqPvFbhf5Hg6kEjpINH5L2lXsf8U'
 var input = new PassThrough({readableObjectMode: true})
 
 input.pipe(WorksheetLog(SPREADSHEET_KEY, resolve('./creds.json')))
+.on('error', function(error)
+{
+  console.trace(error)
+})
 
-input.push({date: Date.now()})
+input.push({date: Date.now(), doh: 'foo'})
+input.push({doh: 'foo'})
