@@ -4,7 +4,7 @@ var GoogleSpreadsheet = require('google-spreadsheet')
 var inherits          = require('inherits')
 
 
-const SANITIZE = /\W+/g
+const REGEXP_SANITIZE = /\W+/g
 
 
 /**
@@ -20,7 +20,7 @@ const SANITIZE = /\W+/g
  */
 function sanitizeColumnName(name)
 {
-  return name.toLowerCase().replace(SANITIZE, '')
+  return name.toLowerCase().replace(REGEXP_SANITIZE, '')
 }
 
 /**
