@@ -72,7 +72,6 @@ function WorksheetLog(spreadsheetKey, creds, options)
   this.cork()
 
 
-  var colnames
   var worksheet = options.worksheet || 0
 
   var sheet = new GoogleSpreadsheet(spreadsheetKey)
@@ -82,11 +81,6 @@ function WorksheetLog(spreadsheetKey, creds, options)
   {
     self.emit('error', err)
     self.end()
-  }
-
-  function headerNotExist(item)
-  {
-    return colnames.indexOf(item) < 0
   }
 
   function filterWorksheet(element)
@@ -107,16 +101,8 @@ function WorksheetLog(spreadsheetKey, creds, options)
       var worksheets = info.worksheets
       worksheet = worksheets.filter(filterWorksheet)[0] || worksheets[worksheet]
 
-      // Get the colnames
-      worksheet.getCells({'max-row': 1}, function(error, cells)
-      {
-        if(error) return onError(error)
-
-        colnames = cells.map(function(item){return item.value})
-
-        // Start writting all the (buffered) data
-        self.uncork()
-      })
+      // Start writting all the (buffered) data
+      self.uncork()
     })
   }
 
@@ -156,16 +142,7 @@ function WorksheetLog(spreadsheetKey, creds, options)
    */
   this._write = function(row, _, callback)
   {
-    var newColumns = Object.keys(row).filter(headerNotExist)
-
-    // No new columns, add row directly
-    if(!newColumns.length)
-      return worksheet.addRow(sanitizeColumnNames(row), callback)
-
-    // New columns, add the new colnames to the header before adding the data
-    colnames = colnames.concat(newColumns)
-
-    worksheet.setHeaders(colnames, function(error)
+    worksheet.addColnames(Object.keys(row), function(error)
     {
       if(error) return onError(error)
 
