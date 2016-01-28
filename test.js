@@ -21,3 +21,4 @@ input.pipe(WorksheetLog(SPREADSHEET_KEY, resolve('./creds.json')))
 
 input.push({date: Date.now(), doh: 'foo'})
 input.push({doh: 'blah'})
+input.push({'abc DEF-hi': 'bbbb'})

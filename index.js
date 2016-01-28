@@ -4,48 +4,6 @@ var GoogleSpreadsheet = require('google-spreadsheet')
 var inherits          = require('inherits')
 
 
-const REGEXP_SANITIZE = /\W+/g
-
-
-/**
- * Sanitize the column name to be a valid one
- *
- * The column names are the header values of the worksheet lowercased and with
- * all non-alpha-numeric characters removed. For example, if the cell `A1`
- * contains the value "Time 2 Eat!" the column name would be "time2eat".
- *
- * @param {string} name
- *
- * @return {string}
- */
-function sanitizeColumnName(name)
-{
-  return name.toLowerCase().replace(REGEXP_SANITIZE, '')
-}
-
-/**
- * Convert columns names to be valid ones for the requests
- *
- * Column names are set by Google and are based on the header row (first row)
- * of the sheet
- *
- * @param {Object} row
- *
- * @return {Object}
- */
-function sanitizeColumnNames(row)
-{
-  var result = {}
-
-  Object.keys(row).forEach(function(key)
-  {
-    result[sanitizeColumnName(key)] = row[key]
-  })
-
-  return result
-}
-
-
 /**
  * Store data on a spreadsheet appending new rows
  *
@@ -123,8 +81,9 @@ function WorksheetLog(spreadsheetKey, creds, options)
       colCount: 1
     }
 
-    sheet.addWorksheet(opts, function(error, info){
-      // [ToDo] Ignore only error related to existing worksheet
+    sheet.addWorksheet(opts, function(error, info)
+    {
+      // [ToDo] Ignore errors related to existing worksheet and notify others
 
       getWorksheet()
     })
@@ -146,7 +105,7 @@ function WorksheetLog(spreadsheetKey, creds, options)
     {
       if(error) return onError(error)
 
-      worksheet.addRow(sanitizeColumnNames(row), callback)
+      worksheet.addRow(row, callback)
     })
   }
 }
