@@ -1,0 +1,23 @@
+{
+  "content-type": "application/atom+xml; charset=UTF-8; type=feed",
+  "x-robots-tag": "noindex, nofollow, nosnippet",
+  "expires": "Thu, 04 Feb 2016 16:13:49 GMT",
+  "date": "Thu, 04 Feb 2016 16:13:49 GMT",
+  "cache-control": "private, max-age=0, must-revalidate, no-transform",
+  "vary": "Accept, X-GData-Authorization, GData-Version",
+  "gdata-version": "3.0",
+  "etag": "W/\"CEUBSH0ycSt7ImA9XRNXFk0.\"",
+  "last-modified": "Thu, 04 Feb 2016 16:10:59 GMT",
+  "transfer-encoding": "chunked",
+  "p3p": "CP=\"This is not a P3P policy! See https://support.google.com/accounts/answer/151657?hl=en for more info.\", CP=\"This is not a P3P policy! See https://support.google.com/accounts/answer/151657?hl=en for more info.\"",
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "SAMEORIGIN",
+  "x-xss-protection": "1; mode=block",
+  "server": "GSE",
+  "set-cookie":
+   [ "NID=76=qJqJOUuZDG8dfNjotD7Rn_5NzFgjWpaV7z1YLxCx4z0mAdBMNCiK8EcLU6TPeNBvDLlN_HVEA6VH8yEugzraR_2-TIg4RXDB8v2N17-A76OOG5KvEPZY7W_i1hj2wG1X;Domain=.google.com;Path=/;Expires=Fri, 05-Aug-2016 16:13:49 GMT;HttpOnly",
+     "NID=76=TIXo_2iZSQmaIIJRtl0Lc1yKKzhHhddLThn0vTDvAcZLALt5MANouuCBit0yYIAJRwfzg_5eVtMfB7Ccny_V424CKx44xHsBGGgr-lSaw8UrNTUUHIo7d167U6SzdlSE;Domain=.google.com;Path=/;Expires=Fri, 05-Aug-2016 16:13:49 GMT;HttpOnly" ],
+  "alternate-protocol": "443:quic,p=1",
+  "alt-svc": "quic=\":443\"; ma=604800; v=\"30,29,28,27,26,25\"",
+  "connection": "close"
+}

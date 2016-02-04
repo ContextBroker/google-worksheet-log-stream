@@ -3,14 +3,17 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/piranna/google-worksheet-log-stream.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Telefónica I+D",
+  "contributors": [
+    "Jesús Leganés Combarro 'piranna' <piranna@gmail.com>"
+  ],
+  "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/piranna/google-worksheet-log-stream/issues"
   },
@@ -20,6 +23,7 @@
     "inherits": "^2.0.1"
   },
   "devDependencies": {
-    "nock": "^6.0.1"
+    "mocha": "^2.4.5",
+    "nock": "^7.0.2"
   }
 }
