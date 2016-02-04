@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "test": "mocha",
+    "coveralls": "scripts/coveralls"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,10 @@
     "inherits": "^2.0.1"
   },
   "devDependencies": {
+    "coveralls": "^2.11.6",
+    "jscoverage": "piranna/jscoverage",
     "mocha": "^2.4.5",
+    "mocha-lcov-reporter": "^1.0.0",
     "nock": "^7.0.2"
   }
 }
