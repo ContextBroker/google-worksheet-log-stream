@@ -1,1 +1,6 @@
-<entry xmlns=\"http://www.w3.org/2005/Atom\"\n       xmlns:gs=\"http://schemas.google.com/spreadsheets/2006\">\n  <title type=\"text\">Hoja 1</title>\n  <gs:rowCount>670</gs:rowCount>\n  <gs:colCount>4</gs:colCount>\n</entry>
+<entry xmlns="http://www.w3.org/2005/Atom"
+       xmlns:gs="http://schemas.google.com/spreadsheets/2006">
+  <title type="text">Hoja 1</title>
+  <gs:rowCount>670</gs:rowCount>
+  <gs:colCount>4</gs:colCount>
+</entry>
