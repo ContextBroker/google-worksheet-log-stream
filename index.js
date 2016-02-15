@@ -34,6 +34,14 @@ function WorksheetLog(spreadsheetKey, creds, options)
 
   var self = this
 
+  if(spreadsheetKey.constructor.name === 'Object')
+  {
+    creds   = spreadsheetKey.creds
+    options = spreadsheetKey.options
+
+    spreadsheetKey = spreadsheetKey.spreadsheetKey
+  }
+
   options = options || {}
   options.objectMode = true
 
