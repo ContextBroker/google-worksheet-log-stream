@@ -5,14 +5,27 @@ var inherits          = require('inherits')
 
 
 /**
+ * Filter the worksheet(s) with the required title
+ *
+ * @param {Worksheet} element
+ */
+function filterWorksheet(element)
+{
+  return element.title == this
+}
+
+
+/**
  * Store data on a spreadsheet appending new rows
  *
  * @param {string} spreadsheetKey - the long id in the sheets URL
- * @param {(Object|string)} creds
+ * @param {Object|string} creds
  * @param {string} creds.client_email
  * @param {string} creds.private_key
  * @param {Object} [options]
- * @param {Integer} [options.worksheet=1]
+ * @param {Integer} [options.worksheet=0]
+ *
+ * @emits {WorksheetLog#Error} error
  */
 function WorksheetLog(spreadsheetKey, creds, options)
 {
@@ -35,15 +48,15 @@ function WorksheetLog(spreadsheetKey, creds, options)
   var sheet = new GoogleSpreadsheet(spreadsheetKey)
 
 
-  function onError(err)
+  /**
+   * Emit the error and close the stream
+   *
+   * @param {Error} error
+   */
+  function onError(error)
   {
-    self.emit('error', err)
+    self.emit('error', error)
     self.end()
-  }
-
-  function filterWorksheet(element)
-  {
-    return element.title === worksheet
   }
 
   /**
@@ -57,7 +70,8 @@ function WorksheetLog(spreadsheetKey, creds, options)
 
       // Get the worksheet
       var worksheets = info.worksheets
-      worksheet = worksheets.filter(filterWorksheet)[0] || worksheets[worksheet]
+      worksheet = worksheets.filter(filterWorksheet, worksheet)[0]
+               || worksheets[worksheet]
 
       // Start writting all the (buffered) data
       self.uncork()
@@ -65,6 +79,7 @@ function WorksheetLog(spreadsheetKey, creds, options)
   }
 
 
+  // Authenticate user
   sheet.useServiceAccountAuth(creds, function(err, token)
   {
     if(err) return onError(err)
@@ -72,8 +87,7 @@ function WorksheetLog(spreadsheetKey, creds, options)
     // Worksheet already selected by its ID
     if(typeof worksheet === 'number') return getWorksheet()
 
-    // Create a new worksheet by its title if don't exists yet and get its ID
-
+    // Create a new worksheet by its title if it don't exists yet and get its ID
     var opts =
     {
       title: worksheet,
