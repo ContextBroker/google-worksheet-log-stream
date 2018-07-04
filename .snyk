@@ -1,0 +1,11 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.12.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:http-signature:20150122':
+    - node-google-spreadsheet > request > http-signature:
+        patched: '2018-07-04T22:56:05.155Z'
+  'npm:lodash:20180130':
+    - node-google-spreadsheet > lodash:
+        patched: '2018-07-04T22:56:05.155Z'
