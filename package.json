@@ -5,7 +5,9 @@
   "scripts": {
     "coveralls": "scripts/coveralls",
     "doc": "jsdoc . -d doc",
-    "test": "mocha"
+    "test": "mocha",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -22,7 +24,8 @@
   "homepage": "https://github.com/piranna/google-worksheet-log-stream#readme",
   "dependencies": {
     "google-spreadsheet": "piranna/node-google-spreadsheet",
-    "inherits": "^2.0.1"
+    "inherits": "^2.0.1",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "coveralls": "^2.11.6",
@@ -31,5 +34,6 @@
     "mocha": "^2.4.5",
     "mocha-lcov-reporter": "^1.0.0",
     "nock": "^7.0.2"
-  }
+  },
+  "snyk": true
 }
